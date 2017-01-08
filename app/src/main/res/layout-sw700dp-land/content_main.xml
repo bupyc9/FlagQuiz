@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:baselineAligned="false">
 
+    <fragment
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:name="ru.bupyc9.flagquiz.SettingsActivityFragment"
+        android:id="@+id/settingsActivityFragment"
+        android:layout_weight="1"
+        tools:layout="@layout/fragment_settings" />
+
+    <fragment
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:name="ru.bupyc9.flagquiz.MainActivityFragment"
+        android:id="@+id/quizFragment"
+        android:layout_weight="2"
+        tools:layout="@layout/fragment_main" />
 </LinearLayout>

@@ -125,4 +125,14 @@
             android:id="@+id/button7"
             android:layout_weight="1" />
     </LinearLayout>
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/answerTextView"
+        android:layout_gravity="bottom|center_horizontal"
+        android:gravity="center_horizontal"
+        android:textSize="@dimen/answer_size"
+        android:textStyle="bold" />
 </LinearLayout>

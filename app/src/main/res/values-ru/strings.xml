@@ -15,4 +15,5 @@
     <string name="results">%1$d догадок, %2$.02f%% правильно</string>
     <string name="world_regions">Регионы</string>
     <string name="world_regions_description">Регионы включенные в викторину</string>
+    <string name="title_activity_settings">Настройки</string>
 </resources>

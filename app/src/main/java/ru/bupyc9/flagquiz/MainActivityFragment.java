@@ -1,5 +1,6 @@
 package ru.bupyc9.flagquiz;
 
+import android.content.SharedPreferences;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.text.Layout;
@@ -96,5 +97,21 @@ public class MainActivityFragment extends Fragment {
         questionNumberTextView.setText(getString(R.string.question, 1, FLAGS_IN_QUIZ));
 
         return view;
+    }
+
+    // Обновление guessRows на основании значения SharedPreferences
+    public void updateGuessRows(SharedPreferences sharedPreferences) {
+        // Получение количества вариантов ответов
+        String choices = sharedPreferences.getString(MainActivity.CHOICES, null);
+        guessRows = Integer.parseInt(choices) / 2;
+        // Все компоненты LinearLayout скрываются
+        for (LinearLayout layout: guessLinearLayouts) {
+            layout.setVisibility(View.GONE);
+        }
+
+        // Отображение нужных компонентов LinearLayout
+        for (int row = 0; row < guessRows; row++) {
+            guessLinearLayouts[row].setVisibility(View.VISIBLE);
+        }
     }
 }

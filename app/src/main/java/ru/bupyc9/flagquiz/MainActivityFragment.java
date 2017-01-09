@@ -1,9 +1,11 @@
 package ru.bupyc9.flagquiz;
 
 import android.content.SharedPreferences;
+import android.content.res.AssetManager;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.text.Layout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
@@ -118,5 +121,42 @@ public class MainActivityFragment extends Fragment {
     // Обновление выбранных регионов по данным из SharedPreferences
     public void updateRegions(SharedPreferences sharedPreferences) {
         regionsSet = sharedPreferences.getStringSet(MainActivity.REGIONS, null);
+    }
+
+    // Настройка и запуск следующей серии вопросов
+    public void resetQuiz() {
+        // Использование AssetManager для получения имен файлов изображений
+        AssetManager assets = getActivity().getAssets();
+        fileNameList.clear(); // Пустой список имен файлов
+        try {
+            // Перебрать все регионы
+            for (String region : regionsSet) {
+                String[] paths = assets.list(region);
+                for (String path : paths) {
+                    fileNameList.add(path.replace(".png", ""));
+                }
+            }
+        } catch (IOException exception) {
+            Log.e(TAG, "Error loading image file names", exception);
+        }
+
+        correctAnswers = 0; // Сброс количества правильных ответов
+        totalGuesses = 0; // Сброс общего количеста попыток
+        quizCountriesList.clear();
+        int flagCounter = 1;
+        int numberOfFlags = fileNameList.size();
+        // Добавление FLAG_IN_QUIZ случайных файлов в quizCountriesList
+        while (flagCounter <= FLAGS_IN_QUIZ) {
+            int randomIndex = random.nextInt(numberOfFlags);
+            // Получение случайного имени файла
+            String fileName = fileNameList.get(randomIndex);
+            // Если регион включен, но еще не был выбран
+            if (!quizCountriesList.contains(fileName)) {
+                quizCountriesList.add(fileName);
+                ++flagCounter;
+            }
+        }
+
+        loadNextFlag(); // Запустить викторину загрузкой первого флага
     }
 }

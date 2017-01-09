@@ -44,6 +44,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        if (this.preferenceChange) {
+            // После задания настроек по умолчанию инициализировать
+            // MainActivityFragment и запустить викторину
+            MainActivityFragment quizFragment = (MainActivityFragment) getSupportFragmentManager().findFragmentById(R.id.quizFragment);
+            quizFragment.updateGuessRows(PreferenceManager.getDefaultSharedPreferences(this));
+            quizFragment.updateRegions(PreferenceManager.getDefaultSharedPreferences(this));
+            quizFragment.resetQuiz();
+            this.preferenceChange = false;
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);

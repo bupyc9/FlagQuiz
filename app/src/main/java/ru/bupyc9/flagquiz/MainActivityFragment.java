@@ -114,4 +114,9 @@ public class MainActivityFragment extends Fragment {
             guessLinearLayouts[row].setVisibility(View.VISIBLE);
         }
     }
+
+    // Обновление выбранных регионов по данным из SharedPreferences
+    public void updateRegions(SharedPreferences sharedPreferences) {
+        regionsSet = sharedPreferences.getStringSet(MainActivity.REGIONS, null);
+    }
 }

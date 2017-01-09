@@ -18,9 +18,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        this.setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        this.setSupportActionBar(toolbar);
         // Задание значений по умолчанию в файле SharedPreferences
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         // Регистрация слушателя для изменений SharedPreferences
@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
                 .getDefaultSharedPreferences(this)
                 .registerOnSharedPreferenceChangeListener(preferenceChangeListListener);
         // Определение размера экрана
-        int screenSize = getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK;
+        int screenSize = this.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK;
         // Для планшетного устройства phoneDevice присваивается false
         if (
             screenSize == Configuration.SCREENLAYOUT_SIZE_LARGE
@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
         // На телефоне разрешена только портретная ориентация
         if (this.phoneDevice) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
     }
 
@@ -59,9 +59,16 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+        // Получение текущей ориентации устройства
+        int orientation = this.getResources().getConfiguration().orientation;
+        // Отображение меню приложения только в портретной ориентации
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            // Заполненое меню
+            this.getMenuInflater().inflate(R.menu.menu_main, menu);
+            return true;
+        }
+
+        return false;
     }
 
     @Override

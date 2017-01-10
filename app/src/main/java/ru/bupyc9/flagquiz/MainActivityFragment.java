@@ -5,7 +5,6 @@ import android.content.res.AssetManager;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -198,7 +197,7 @@ public class MainActivityFragment extends Fragment {
                 Button newGuessButton = (Button) guessLinearLayouts[row].getChildAt(column);
                 newGuessButton.setEnabled(true);
                 String filename = fileNameList.get((row * 2) + column);
-                newGuessButton.setText(getCoutryName(filename));
+                newGuessButton.setText(getCountryName(filename));
             }
         }
 
@@ -207,7 +206,12 @@ public class MainActivityFragment extends Fragment {
         int column = random.nextInt(2); // Выбор случаного столбца
 
         LinearLayout randomRow = guessLinearLayouts[row];
-        String countryName = getCoutryName(correctAnswer);
+        String countryName = getCountryName(correctAnswer);
         ((Button) randomRow.getChildAt(column)).setText(countryName);
+    }
+
+    // Метод разбирает имя файла с флагом и возвращает название страны
+    private String getCountryName(String name) {
+        return name.substring(name.indexOf('-') + 1).replace('_', ' ');
     }
 }

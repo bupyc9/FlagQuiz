@@ -2,6 +2,7 @@ package ru.bupyc9.flagquiz;
 
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
+import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.text.Layout;
@@ -17,8 +18,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Handler;
@@ -158,5 +161,53 @@ public class MainActivityFragment extends Fragment {
         }
 
         loadNextFlag(); // Запустить викторину загрузкой первого флага
+    }
+
+    // Загрузка следующего флага после правильного ответа
+    private void loadNextFlag() {
+        // Получение имени файла следующего флага и удаление его из списка
+        String nextImage = quizCountriesList.remove(0);
+        correctAnswer = nextImage; // Обновление правильного ответа
+        answerTextView.setText("");
+        // Отображение номера текущего вопроса
+        questionNumberTextView.setText(getString(R.string.question, (correctAnswers + 1), FLAGS_IN_QUIZ));
+        // Извлечение региона из имени следующего изображения
+        String region = nextImage.substring(0, nextImage.indexOf('-'));
+        // Использование AssetManager для загрузки следующего изображения
+        AssetManager assetManager = getActivity().getAssets();
+        // Получение объекта InputStream для ресурса следующего флага и попытка использования InputStream
+        try (InputStream stream = assetManager.open(region + "/" + nextImage + ".png")) {
+            // Загрзука графики в виде Drawable и вывод на flagImageView
+            Drawable flag = Drawable.createFromStream(stream, nextImage);
+            flagImageView.setImageDrawable(flag);
+            animate(false); // Анимация появления флага на экране
+        } catch (IOException exception) {
+            Log.e(TAG, "Error loading" + nextImage, exception);
+        }
+
+        Collections.shuffle(fileNameList);
+        // Помещение правильного ответа в конец fileNameList
+        int correct = fileNameList.indexOf(correctAnswer);
+        fileNameList.add(fileNameList.remove(correct));
+
+        // Добавление 2, 4, 6, 8 кнопок в зависимости от значения guessRows
+        for (int row = 0; row < guessRows; row++) {
+            // Размещение кнопок в currentTableRow
+            for (int column = 0; column < guessLinearLayouts[row].getChildCount(); column++) {
+                // Получение ссылки на Button
+                Button newGuessButton = (Button) guessLinearLayouts[row].getChildAt(column);
+                newGuessButton.setEnabled(true);
+                String filename = fileNameList.get((row * 2) + column);
+                newGuessButton.setText(getCoutryName(filename));
+            }
+        }
+
+        // Случаная замена одной кнопки правильным ответом
+        int row = random.nextInt(guessRows); // Выбор случайной строки
+        int column = random.nextInt(2); // Выбор случаного столбца
+
+        LinearLayout randomRow = guessLinearLayouts[row];
+        String countryName = getCoutryName(correctAnswer);
+        ((Button) randomRow.getChildAt(column)).setText(countryName);
     }
 }

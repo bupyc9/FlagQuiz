@@ -316,4 +316,13 @@ public class MainActivityFragment extends Fragment {
             }
         }
     };
+
+    private void disableButtons() {
+        for (int row = 0; row < guessRows; row++) {
+            LinearLayout guessRow = guessLinearLayouts[row];
+            for (int i = 0; i < guessRow.getChildCount(); i++) {
+                guessRow.getChildAt(i).setEnabled(false);
+            }
+        }
+    }
 }

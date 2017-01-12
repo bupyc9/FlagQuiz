@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -31,8 +32,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -68,22 +67,7 @@ public class MainActivityFragment extends Fragment {
         fileNameList = new ArrayList<>();
         quizCountriesList = new ArrayList<>();
         random = new SecureRandom();
-        handler = new Handler() {
-            @Override
-            public void close() {
-
-            }
-
-            @Override
-            public void flush() {
-
-            }
-
-            @Override
-            public void publish(LogRecord record) {
-
-            }
-        };
+        handler = new Handler();
 
         // Загрузка анимации для неправильных ответов
         shakeAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.incorrect_shake);

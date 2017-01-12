@@ -2,9 +2,14 @@ package ru.bupyc9.flagquiz;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -95,7 +100,7 @@ public class MainActivityFragment extends Fragment {
         answerTextView = (TextView) view.findViewById(R.id.answerTextView);
 
         // Настройка слушателей для кнопок ответов
-        for (LinearLayout row: guessLinearLayouts) {
+        for (LinearLayout row : guessLinearLayouts) {
             for (int column = 0; column < row.getChildCount(); column++) {
                 Button button = (Button) row.getChildAt(column);
                 button.setOnClickListener(guessButtonListener);
@@ -113,7 +118,7 @@ public class MainActivityFragment extends Fragment {
         String choices = sharedPreferences.getString(MainActivity.CHOICES, null);
         guessRows = Integer.parseInt(choices) / 2;
         // Все компоненты LinearLayout скрываются
-        for (LinearLayout layout: guessLinearLayouts) {
+        for (LinearLayout layout : guessLinearLayouts) {
             layout.setVisibility(View.GONE);
         }
 
@@ -219,7 +224,7 @@ public class MainActivityFragment extends Fragment {
     }
 
     // Весь макет quizLinearLayout появляется или исчезает с экрана
-    private void animate (boolean animateOut) {
+    private void animate(boolean animateOut) {
         // Предотвращение анимации интерфейса для первого флага
         if (correctAnswers == 0) {
             return;
@@ -251,4 +256,64 @@ public class MainActivityFragment extends Fragment {
         animator.setDuration(500);
         animator.start();
     }
+
+    // Вызывается при нажатии кнопки ответа
+    private View.OnClickListener guessButtonListener = new View.OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            Button guessButton = ((Button) v);
+            String guess = guessButton.getText().toString();
+            String answer = getCountryName(correctAnswer);
+            ++totalGuesses;
+
+            if (guess.equals(answer)) { // Если ответ правильный
+                ++correctAnswers;
+                answerTextView.setText(answer + "!");
+                answerTextView.setTextColor(getResources().getColor(
+                        R.color.correct_answer,
+                        getContext().getTheme()
+                ));
+
+                disableButtons();
+
+                if (correctAnswers == FLAGS_IN_QUIZ) {
+                    // DialogFragment для вывода статистики и перезапуска
+                    DialogFragment quizResults = new DialogFragment() {
+                        @NonNull
+                        @Override
+                        public Dialog onCreateDialog(Bundle bundle) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                            builder.setMessage(getString(R.string.results, totalGuesses, (1000 / (double) totalGuesses)));
+                            // Кнопка сброса
+                            builder.setPositiveButton(R.string.reset_quiz, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    resetQuiz();
+                                }
+                            });
+
+                            return builder.create();
+                        }
+                    };
+
+                    quizResults.setCancelable(false);
+                    quizResults.show(getFragmentManager(), "quiz results");
+                } else { // Ответ правильный но викторина не закончена
+                    // Загрузка следующего флага после двухсекундной задержки
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            animate(true);
+                        }
+                    }, 2000);
+                }
+            } else { // Неправльный ответ
+                flagImageView.startAnimation(shakeAnimation);
+                answerTextView.setText(R.string.incorrect_answer);
+                answerTextView.setTextColor(getResources().getColor(R.color.incorrect_answer, getContext().getTheme()));
+                guessButton.setEnabled(false);
+            }
+        }
+    };
 }

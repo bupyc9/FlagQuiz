@@ -1,5 +1,7 @@
 package ru.bupyc9.flagquiz;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.graphics.drawable.Drawable;
@@ -8,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -213,5 +216,39 @@ public class MainActivityFragment extends Fragment {
     // Метод разбирает имя файла с флагом и возвращает название страны
     private String getCountryName(String name) {
         return name.substring(name.indexOf('-') + 1).replace('_', ' ');
+    }
+
+    // Весь макет quizLinearLayout появляется или исчезает с экрана
+    private void animate (boolean animateOut) {
+        // Предотвращение анимации интерфейса для первого флага
+        if (correctAnswers == 0) {
+            return;
+        }
+
+        // Вычисление координат центра
+        int centerX = (quizLinearLayout.getLeft() + quizLinearLayout.getRight()) / 2;
+        int centerY = (quizLinearLayout.getTop() + quizLinearLayout.getBottom()) / 2;
+
+        // Вычисление радиуса анимации
+        int radius = Math.max(quizLinearLayout.getWidth(), quizLinearLayout.getHeight());
+        Animator animator;
+
+        // Если изображение должно исчезать с экрана
+        if (animateOut) {
+            // Создание круговой анимации
+            animator = ViewAnimationUtils.createCircularReveal(quizLinearLayout, centerX, centerY, radius, 0);
+            animator.addListener(new AnimatorListenerAdapter() {
+                // Вызывается при завершение анимации
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    loadNextFlag();
+                }
+            });
+        } else {
+            animator = ViewAnimationUtils.createCircularReveal(quizLinearLayout, centerX, centerY, 0, radius);
+        }
+
+        animator.setDuration(500);
+        animator.start();
     }
 }

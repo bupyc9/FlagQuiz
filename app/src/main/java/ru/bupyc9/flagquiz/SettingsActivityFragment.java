@@ -1,10 +1,10 @@
 package ru.bupyc9.flagquiz;
 
 import android.os.Bundle;
+import android.preference.PreferenceFragment;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 
-public class SettingsActivityFragment extends Fragment {
+public class SettingsActivityFragment extends PreferenceFragment {
     @Override
     public void onCreate(@Nullable Bundle bundle) {
         super.onCreate(bundle);

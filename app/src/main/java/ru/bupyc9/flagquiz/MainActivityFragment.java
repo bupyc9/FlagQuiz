@@ -78,7 +78,8 @@ public class MainActivityFragment extends Fragment {
         questionNumberTextView = (TextView) view.findViewById(R.id.questionNumberTextView);
         flagImageView = (ImageView) view.findViewById(R.id.flagImageView);
         guessLinearLayouts = new LinearLayout[4];
-        guessLinearLayouts[0] = (LinearLayout) view.findViewById(R.id.row2LinearLayout);
+        guessLinearLayouts[0] = (LinearLayout) view.findViewById(R.id.row1LinearLayout);
+        guessLinearLayouts[1] = (LinearLayout) view.findViewById(R.id.row2LinearLayout);
         guessLinearLayouts[2] = (LinearLayout) view.findViewById(R.id.row3LinearLayout);
         guessLinearLayouts[3] = (LinearLayout) view.findViewById(R.id.row4LinearLayout);
         answerTextView = (TextView) view.findViewById(R.id.answerTextView);
